@@ -1,0 +1,142 @@
+#navigation_bar {
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.3);
+}
+
+.light_body {
+    background-color: #eee;
+}
+
+.main_navbar {
+    background-color: #f5ba13;
+}
+
+.nav_widgets {
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.jb_tron {
+    width: 450px;
+    border: 1px solid black;
+    margin-top: 50px;
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+
+.jb_tron2 {
+    width: 480px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    padding: 5px 15px;
+}
+
+.select ul li {
+    display: inline;
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.register_brand {
+    text-align: center;
+}
+
+#brand_icon {
+    width: 70px;
+}
+
+.home_container {
+    padding: 0%;
+}
+
+.home_left h1 {
+    line-height: 56px;
+    font-size: 48px;
+    font-weight: 400;
+    letter-spacing: -0.5px;
+    font-family: "Google Sans", Roboto, Arial, Helvetica, sans-serif;
+}
+
+.home_left h2 {
+    padding-top: 5px;
+    font-size: 20px;
+    font-weight: 400;
+    letter-spacing: initial;
+    line-height: 28px;
+    color: #6a6e74;
+}
+
+.home_authenticate {
+    padding: 25px 0px;
+}
+
+.btn_login {
+    background-color: #f5ba13;
+    color: #eee;
+    padding: 6px 40px;
+    font-size: 22px;
+    width: 160px;
+}
+
+.btn_register {
+    padding: 6px 40px;
+    font-size: 22px;
+    color: black;
+}
+
+.btn_register:hover {
+    background-color: black;
+    color: #f5ba13;
+}
+
+.profile_picture {
+    width: 37px;
+    border-radius: 50%;
+    border: 3px solid #fff;
+}
+
+
+.footer-2 {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: #f5ba13;
+    color: #fff;
+    text-align: center;
+}
+
+.footer-copyright p {
+    color: #fff;
+    margin: 2px 0 0;
+}
+
+#add_new {
+    position: fixed;
+    bottom: 0;
+    cursor: pointer;
+}
+
+.add_note {
+    color: rgb(180, 180, 180);
+    
+}
+
+.note_header{
+    height: 65px;
+}
+.note_title{
+    border: none;
+    font-size: 20px;
+    width: 414px;
+    outline: none;
+}
+.note_descreption{
+    border: none;
+    font-size: 20px;
+    outline: none;
+}
+
+.btn_save{
+    background-color: #f5ba13;
+    color: black;
+}
