@@ -17,6 +17,7 @@ const app = express();
 
 var picture = String;
 var name = String;
+var gId = String;
 
 app.use(express.static("public"));
 app.set("view engine", "ejs");
@@ -32,7 +33,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-mongoose.connect(process.env.MONGO_DB_ADDRESS, {
+mongoose.connect("mongodb://localhost:27017/SaveNotes", {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
@@ -42,7 +43,11 @@ mongoose.set('useCreateIndex', true);
 const userSchema = new mongoose.Schema ({
     email: String,
     password: String,
-    googleId: String
+    googleId: String,
+    notes: {
+        noteTitle: String,
+        mainNote: String
+    }
 });
 
 userSchema.plugin(passportLocalMongoose);
@@ -77,7 +82,8 @@ passport.use(new GoogleStrategy({
     });
     picture = profile._json.picture;
     name = profile._json.name;
-    return (picture, name);
+    gId = profile.id;
+    return (picture, name, gId);
   }
 ));
 
@@ -113,11 +119,35 @@ app.get("/register", (req, res) => {
 
 app.get("/notes", (req, res) => {
     if (req.isAuthenticated()) {
-        res.render("notes", {profilePicture: picture, userName: name});
+        User.find({googleId: gId}, function(err, notes){
+            res.render("notes", {profilePicture: picture, userName: name, googleId: gId, notes: notes});
+        })
     } else {
         res.redirect("login");
     }
 });
+
+app.post("/notes", (req, res) => {
+
+    
+    const updateDocument = async () => {
+        try{
+            const result = await User.updateOne({googleId: req.body.google_id}, {
+                $push: {
+                    notes: {
+                        noteTitle: req.body.note_title,
+                        mainNote: req.body.main_note
+                    }
+                }
+            })
+            console.log(result);
+        }catch(err){
+            console.log(err);
+        }
+    }
+    updateDocument();
+    res.redirect("notes");
+})
 
 /*------------------ Log out your Account ------------------*/
 app.get("/logout", function(req, res){

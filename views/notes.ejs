@@ -91,12 +91,13 @@
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form action="#">
+                <form action="/notes" method="POST">
 
                     <div class="modal-header note_header">
+                        <input type="hidden" name="google_id" value="<%=googleId%>">
 
                         <div class="form-group">
-                            <input type="text" placeholder="Title...." class="form-control note_title"
+                            <input type="text" name="note_title" placeholder="Title...." class="form-control note_title"
                                 id="exampleInputEmail1" aria-describedby="emailHelp">
                         </div>
 
@@ -106,13 +107,13 @@
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
-                            <textarea placeholder="Add note...." class="form-control note_descreption"
+                            <textarea name="main_note" placeholder="Add note...." class="form-control note_descreption"
                                 id="exampleFormControlTextarea1" rows="3"></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn_save">Save Note</button>
+                        <button type="submit" class="btn btn_save">Save Note</button>
                     </div>
                 </form>
             </div>
@@ -122,41 +123,16 @@
     <div class="container pt-5">
         
         <div class="row">
+            <% notes.forEach(function(note){ %>
+                <% console.log(note.notes.noteTitle) %>
             <div class="col-md-3">
                 <div class="card" style="width: 15rem;">
                     <div class="card-body">
-                        <h5 class="card-title">Card title</h5>
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-                            card's content.</p>
+                        <h5 class="card-title"><%= note.notes.noteTitle %></h5>
+                        <p class="card-text"><%= note.notes.mainNote %></p>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="card" style="width: 15rem;">
-                    <div class="card-body">
-                        <h5 class="card-title">Card title</h5>
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-                            card's content.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card" style="width: 15rem;">
-                    <div class="card-body">
-                        <h5 class="card-title">Card title</h5>
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-                            card's content.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card" style="width: 15rem;">
-                    <div class="card-body">
-                        <h5 class="card-title">Card title</h5>
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-                            card's content.</p>
-                    </div>
-                </div>
-            </div>
+            <% }); %>
         </div>
     </div>
