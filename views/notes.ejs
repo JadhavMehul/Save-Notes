@@ -84,8 +84,6 @@
                 </div>
             </div>
         </div>
-
-
     </section>
     <!-- Modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -124,15 +122,18 @@
         
         <div class="row">
             <% notes.forEach(function(note){ %>
-                <% console.log(note.notes.noteTitle) %>
-            <div class="col-md-3">
-                <div class="card" style="width: 15rem;">
-                    <div class="card-body">
-                        <h5 class="card-title"><%= note.notes.noteTitle %></h5>
-                        <p class="card-text"><%= note.notes.mainNote %></p>
+                <% note.notes.forEach((n => { %>
+                    <div class="col-md-3">
+                        <div class="card mb-2 d-block mx-auto" style="width: 15rem;">
+                            <div class="card-body">
+                                <h5 class="card-title"><%= n.noteTitle.substring(0, 36) + "..." %></h5>
+                                <p class="card-text"><%= n.mainNote.substring(0, 30) + "..." %>
+                                    <a href="/<%= n._id %>">Read more</a>
+                                </p>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
+                <%}))%>
             <% }); %>
         </div>
     </div>

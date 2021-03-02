@@ -33,7 +33,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-mongoose.connect("mongodb://localhost:27017/SaveNotes", {
+mongoose.connect(process.env.MONGO_DB_ADDRESS, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
@@ -44,10 +44,10 @@ const userSchema = new mongoose.Schema ({
     email: String,
     password: String,
     googleId: String,
-    notes: {
+    notes: [{
         noteTitle: String,
         mainNote: String
-    }
+    }]
 });
 
 userSchema.plugin(passportLocalMongoose);
@@ -134,10 +134,10 @@ app.post("/notes", (req, res) => {
         try{
             const result = await User.updateOne({googleId: req.body.google_id}, {
                 $push: {
-                    notes: {
+                    notes: [{
                         noteTitle: req.body.note_title,
                         mainNote: req.body.main_note
-                    }
+                    }]
                 }
             })
             console.log(result);
@@ -146,7 +146,14 @@ app.post("/notes", (req, res) => {
         }
     }
     updateDocument();
-    res.redirect("notes");
+    res.redirect('back');
+});
+
+app.get("/:noteId/", (req, res) => {
+    const requestedNoteId = req.params.noteId;
+    console.log(requestedNoteId);
+
+    
 })
 
 /*------------------ Log out your Account ------------------*/
