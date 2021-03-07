@@ -12,6 +12,7 @@ const nodemailer = require("nodemailer");
 const passportLocalMongoose = require("passport-local-mongoose"); // use this for security like password will salted and hashed.
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const findOrCreate = require("mongoose-findorcreate");
+const { lowerFirst } = require('lodash');
 
 const app = express();
 
@@ -21,7 +22,7 @@ var gId = String;
 
 app.use(express.static("public"));
 app.set("view engine", "ejs");
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(session({
     secret: "Our Little Secret",
@@ -40,7 +41,7 @@ mongoose.connect(process.env.MONGO_DB_ADDRESS, {
 mongoose.set('useCreateIndex', true);
 
 
-const userSchema = new mongoose.Schema ({
+const userSchema = new mongoose.Schema({
     email: String,
     password: String,
     googleId: String,
@@ -58,12 +59,12 @@ const User = new mongoose.model("User", userSchema)
 passport.use(User.createStrategy());
 
 
-passport.serializeUser(function(user, done) {
+passport.serializeUser(function (user, done) {
     done(null, user.id);
 });
-  
-passport.deserializeUser(function(id, done) {
-    User.findById(id, function(err, user) {
+
+passport.deserializeUser(function (id, done) {
+    User.findById(id, function (err, user) {
         done(err, user);
     });
 });
@@ -74,17 +75,17 @@ passport.use(new GoogleStrategy({
     clientSecret: process.env.CLIENT_SECRET,
     callbackURL: "http://localhost:3000/auth/google/savenotes",
     userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo"
-  },
-  function(accessToken, refreshToken, profile, cb) {
-    console.log(profile);
-    User.findOrCreate({ googleId: profile.id }, function (err, user) {
-        return cb(err, user);
-    });
-    picture = profile._json.picture;
-    name = profile._json.name;
-    gId = profile.id;
-    return (picture, name, gId);
-  }
+},
+    function (accessToken, refreshToken, profile, cb) {
+        // console.log(profile);
+        User.findOrCreate({ googleId: profile.id }, function (err, user) {
+            return cb(err, user);
+        });
+        picture = profile._json.picture;
+        name = profile._json.name;
+        gId = profile.id;
+        return (picture, name, gId);
+    }
 ));
 
 
@@ -101,13 +102,13 @@ app.get("/auth/google",
     passport.authenticate("google", { scope: ["profile"] })
 );
 
-app.get("/auth/google/savenotes", 
-  passport.authenticate("google", { failureRedirect: "/login" }),
-  function(req, res) {
-    // Successful authentication, redirect home.
-    
-    res.redirect("/notes");
-});
+app.get("/auth/google/savenotes",
+    passport.authenticate("google", { failureRedirect: "/login" }),
+    function (req, res) {
+        // Successful authentication, redirect home.
+
+        res.redirect("/notes");
+    });
 
 app.get("/login", (req, res) => {
     res.render("login");
@@ -119,8 +120,8 @@ app.get("/register", (req, res) => {
 
 app.get("/notes", (req, res) => {
     if (req.isAuthenticated()) {
-        User.find({googleId: gId}, function(err, notes){
-            res.render("notes", {profilePicture: picture, userName: name, googleId: gId, notes: notes});
+        User.find({ googleId: gId }, function (err, notes) {
+            res.render("notes", { profilePicture: picture, userName: name, googleId: gId, notes: notes });
         })
     } else {
         res.redirect("login");
@@ -128,11 +129,9 @@ app.get("/notes", (req, res) => {
 });
 
 app.post("/notes", (req, res) => {
-
-    
     const updateDocument = async () => {
-        try{
-            const result = await User.updateOne({googleId: req.body.google_id}, {
+        try {
+            const result = await User.updateOne({ googleId: req.body.google_id }, {
                 $push: {
                     notes: [{
                         noteTitle: req.body.note_title,
@@ -140,8 +139,7 @@ app.post("/notes", (req, res) => {
                     }]
                 }
             })
-            console.log(result);
-        }catch(err){
+        } catch (err) {
             console.log(err);
         }
     }
@@ -150,7 +148,7 @@ app.post("/notes", (req, res) => {
 });
 
 /*------------------ Log out your Account ------------------*/
-app.get("/logout", function(req, res){
+app.get("/logout", function (req, res) {
     req.logout();
     res.redirect("/");
 });

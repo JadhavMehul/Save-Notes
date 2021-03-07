@@ -1,0 +1,4 @@
+<% notes.forEach(function(note){ %>
+<%=console.log("Notes",note.notes.noteTitle)%>
+<%=console.log(note.notes.noteTitle.length)%>
+<%note.notes.noteTitle.forEach(n=>{%> <%=console.log(n)%> <%})%> <% }); %>
