@@ -149,18 +149,18 @@ app.post("/notes", (req, res) => {
     res.redirect('back');
 });
 
-app.get("/:noteId/", (req, res) => {
-    const requestedNoteId = req.params.noteId;
-    console.log(requestedNoteId);
-
-    
-})
-
 /*------------------ Log out your Account ------------------*/
 app.get("/logout", function(req, res){
     req.logout();
     res.redirect("/");
 });
+
+
+app.get("/:noteId/", (req, res) => {
+    const requestedNoteId = req.params.noteId;
+
+    res.render("readNote") ;
+})
 
 
 app.listen(3000, function() {
