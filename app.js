@@ -155,18 +155,37 @@ app.get("/logout", function (req, res) {
 
 
 app.get("/notes/:userId/:noteId", async (req, res) => {
-    const requestedNoteId = req.params.userId;
+    const requestedUserId = req.params.userId;
+    const requestedNoteId = req.params.noteId;
     try {
-        const readNote = await User.findById(requestedNoteId)
+        const readNote = await User.findById(requestedUserId)
         const note = readNote.notes.find(note => note._id == req.params.noteId)
         res.render('readNote', {
-            note
+            note,
+            profilePicture: picture,
+            userName: name,
+            googleId: gId,
+            uId: requestedUserId,
+            nId: requestedNoteId
         });
     } catch (error) {
         console.log(error);
         res.send(error.message)
     }
 
+})
+
+app.get("/delete/note/:uId/:nId", async (req, res) => {
+    try {
+        User.findOneAndUpdate({_id: req.params.uId}, {$pull: {notes: {_id: req.params.nId}}} ,(err) => {
+            if (!err) {
+                res.redirect("/notes")
+            }
+        })
+    } catch (error) {
+        console.log(error);
+        res.send(error.message);
+    }
 })
 
 

@@ -23,6 +23,27 @@
     padding-bottom: 30px;
 }
 
+.note_jb_tron {
+    width: 650px;
+    border-radius: 0.5rem;
+    border: 1px solid black;
+    margin-top: 50px;
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+
+.note_jb_tron>h2{
+    padding: 16px 24px 4px;
+}
+.note_jb_tron>p{
+    padding: 0 24px;
+    font-size: 20px;
+    color: black;
+}
+.note_jb_tron>div{
+    padding: 0 24px;
+}
+
 .jb_tron2 {
     width: 480px;
     margin-top: 5px;
