@@ -34,7 +34,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-mongoose.connect(process.env.MONGO_DB_ADDRESS, {
+mongoose.connect("mongodb://localhost:27017/SaveNotes", {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
@@ -52,7 +52,7 @@ const userSchema = new mongoose.Schema({
 });
 
 userSchema.plugin(passportLocalMongoose);
-userSchema.plugin(findOrCreate)
+userSchema.plugin(findOrCreate);
 
 const User = new mongoose.model("User", userSchema)
 
@@ -77,8 +77,8 @@ passport.use(new GoogleStrategy({
     userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo"
 },
     function (accessToken, refreshToken, profile, cb) {
-        // console.log(profile);
-        User.findOrCreate({ googleId: profile.id }, function (err, user) {
+        console.log(profile);
+        User.findOrCreate({ googleId: profile.id, username: profile.emails[0].value }, function (err, user) {
             return cb(err, user);
         });
         picture = profile._json.picture;
@@ -99,7 +99,7 @@ app.get("/", (req, res) => {
 
 /*------------------ Google Api For Account ------------------*/
 app.get("/auth/google",
-    passport.authenticate("google", { scope: ["profile"] })
+    passport.authenticate("google", { scope: ['profile',"email"] })
 );
 
 app.get("/auth/google/savenotes",
