@@ -186,7 +186,7 @@
                     <div class="card-body">
                       <h5 class="card-title"><%= n.noteTitle.substring(0, 36) + "..." %></h5>
                       <p class="card-text"><%= n.mainNote.substring(0, 30) + "..." %>
-                          <a href="/<%= n._id %>">Read more</a>
+                          <a href="/notes/<%= note._id %>/<%=n._id%>">Read more</a>
                       </p>
                     </div>
                   </div>
@@ -194,8 +194,6 @@
               <%}))%>
             <% }); %>
         </div>
-       
-      </div>
+        
     </div>
-  </body>
 </html>

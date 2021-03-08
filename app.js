@@ -154,13 +154,22 @@ app.get("/logout", function (req, res) {
 });
 
 
-app.get("/:noteId/", (req, res) => {
-    const requestedNoteId = req.params.noteId;
+app.get("/notes/:userId/:noteId", async (req, res) => {
+    const requestedNoteId = req.params.userId;
+    try {
+        const readNote = await User.findById(requestedNoteId)
+        const note = readNote.notes.find(note => note._id == req.params.noteId)
+        res.render('readNote', {
+            note
+        });
+    } catch (error) {
+        console.log(error);
+        res.send(error.message)
+    }
 
-    res.render("readNote") ;
 })
 
 
-app.listen(3000, function() {
+app.listen(3000, function () {
     console.log("Server started at port 3000");
 });
