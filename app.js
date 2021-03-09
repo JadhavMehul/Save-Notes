@@ -20,8 +20,10 @@ var picture = String;
 var name = String;
 var gId = String;
 
+var pUname = String;
+
 app.use(express.static("public"));
-app.set("view engine", "ejs");
+app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(session({
@@ -97,6 +99,16 @@ app.get("/", (req, res) => {
     }
 });
 
+app.get("/h", (req, res) => {
+    if (req.isAuthenticated()) {
+        User.find({ username: pUname }, function (err, notes) {
+            res.render("privateNotes", {Uname: pUname, notes: notes });
+        })
+    } else {
+        res.render("home");
+    }
+});
+
 /*------------------ Google Api For Account ------------------*/
 app.get("/auth/google",
     passport.authenticate("google", { scope: ['profile',"email"] })
@@ -115,7 +127,95 @@ app.get("/login", (req, res) => {
 });
 
 app.get("/register", (req, res) => {
-    res.render("register");
+    const otp = Math.floor(Math.random() * 9999) + 1;
+
+    res.render("register",{generatedOTP: otp});
+});
+
+app.get("/otp/:email_id/:pass/:OTP", function(req, res){
+    const userEmail = req.params.email_id;
+    const userPass = req.params.pass;
+    const otp = req.params.OTP;
+    res.render("otpPage",{userEmail: userEmail, userPass:userPass, otp:otp});
+});
+
+app.post("/successfulRegister", function(req, res){
+    const email = req.body.username;
+    const password = req.body.password;
+    const generatedOTP = req.body.mainOtp;
+    const userOtp = req.body.userOtp;
+
+    if (generatedOTP === userOtp) {
+        User.register({username: email}, password, function(err, user){
+            if (err) {
+                console.log(err);
+                res.redirect("/register");
+            } else {
+                passport.authenticate("local")(req, res, function(){
+                    res.redirect("/")
+                });
+            }
+        });
+    } else {
+        res.send("error occur try again later.")
+    }
+
+})
+
+app.post("/register", function(req, res){
+
+    const OTP = req.body.originalOTP;
+    
+
+    const email_id = req.body.username;
+    const pass = req.body.password;
+
+    var transporter = nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false,
+        requireTLS: true,
+        auth:{
+            user: process.env.EMAIL_ID,
+            pass: process.env.EMAIL_PASS,
+        }
+    });
+
+    var mailOptions = {
+        from: 'jmehuljadhav.mj@gmail.com',
+        to: email_id,
+        subject: "Save Notes",
+        text: "hello this email is generated for you by Save Notes to check weather your login credentials are true or not. This is your otp for getting register :-" + OTP + "If you did not register your self with save notes then kindly change your email password."
+    }
+
+    transporter.sendMail(mailOptions, function(error, info){
+        if(error){
+            console.log(error);
+        } else {
+            console.log("email sent", info.response);
+            res.redirect("otp/"+email_id+"/"+pass+"/"+OTP);
+        }
+    })
+});
+
+app.post("/login", function(req, res){
+
+    pUname = req.body.username
+    
+    const user = new User({
+        username: req.body.username,
+        password: req.body.password
+    });
+
+    req.login(user, function(err){
+        if (err) {
+            console.log(err);
+        } else {
+            passport.authenticate("local")(req, res, function(){
+                res.redirect("/h")
+            });
+        }
+    });
 });
 
 app.get("/notes", (req, res) => {
@@ -144,7 +244,7 @@ app.post("/notes", (req, res) => {
         }
     }
     updateDocument();
-    res.redirect('back');
+    res.redirect("/");
 });
 
 /*------------------ Log out your Account ------------------*/
