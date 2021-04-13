@@ -247,6 +247,26 @@ app.post("/notes", (req, res) => {
     res.redirect("/");
 });
 
+app.post("/pNotes", (req, res) => {
+    const updateDocument = async () => {
+        try {
+            const result = await User.updateOne({ username: req.body.my_Uname }, {
+                $push: {
+                    notes: [{
+                        noteTitle: req.body.note_title,
+                        mainNote: req.body.main_note
+                    }]
+                }
+            })
+        } catch (err) {
+            console.log(err);
+        }
+    }
+    updateDocument();
+    res.redirect("/h");
+});
+
+
 /*------------------ Log out your Account ------------------*/
 app.get("/logout", function (req, res) {
     req.logout();
@@ -275,6 +295,26 @@ app.get("/notes/:userId/:noteId", async (req, res) => {
 
 })
 
+app.get("/pNotes/:userId/:noteId/:Uname", async (req, res) => {
+    const requestedUserId = req.params.userId;
+    const requestedNoteId = req.params.noteId;
+    try {
+        const readNote = await User.findById(requestedUserId)
+        const note = readNote.notes.find(note => note._id == req.params.noteId)
+        res.render('privateReadNote', {
+            note,
+            Uname: req.params.Uname,
+            uId: requestedUserId,
+            nId: requestedNoteId
+        });
+    } catch (error) {
+        console.log(error);
+        res.send(error.message)
+    }
+
+})
+
+
 app.get("/delete/note/:uId/:nId", async (req, res) => {
     try {
         User.findOneAndUpdate({_id: req.params.uId}, {$pull: {notes: {_id: req.params.nId}}} ,(err) => {
@@ -288,6 +328,18 @@ app.get("/delete/note/:uId/:nId", async (req, res) => {
     }
 })
 
+app.get("/pDelete/note/:uId/:nId", async (req, res) => {
+    try {
+        User.findOneAndUpdate({_id: req.params.uId}, {$pull: {notes: {_id: req.params.nId}}} ,(err) => {
+            if (!err) {
+                res.redirect("/h")
+            }
+        })
+    } catch (error) {
+        console.log(error);
+        res.send(error.message);
+    }
+})
 
 app.listen(3000, function () {
     console.log("Server started at port 3000");

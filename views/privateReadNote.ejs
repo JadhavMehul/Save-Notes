@@ -43,7 +43,7 @@
     />
 
     <!----------------External CSS---------------->
-    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="/css/styles.css" />
     <link rel="stylesheet" href="css/bootstrap-social.css" />
   </head>
 
@@ -84,13 +84,14 @@
                   aria-expanded="false"
                 >
                 <img
-                    src="images/user-circle-solid.svg"
+                    src="/images/user-circle-solid.svg"
                     class="profile_picture"
                     alt=""
                   />
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                   <a class="dropdown-item" href="#"><%= Uname %></a>
+                  <a class="dropdown-item" href="#" data-toggle="modal" data-target="#exampleModal">Add new note</a>
                   <div class="dropdown-divider"></div>
                   <a class="dropdown-item" href="/logout">Log Out</a>
                 </div>
@@ -101,22 +102,7 @@
       </nav>
     </section>
 
-    <section id="add_new">
-      <div class="container" data-toggle="modal" data-target="#exampleModal">
-        <div class="jumbotron bg-white jb_tron2">
-          <div class="add_note">
-            <ul class="nav">
-              <li class="nav-item">
-                <h2 class="m-0 nav-link">Add new notes....</h2>
-              </li>
-              <li class="nav-item ml-auto">
-                <h3 class="nav-link"><i class="fas fa-plus-circle"></i></h3>
-              </li>
-            </ul>
-          </div>
-        </div>
-    </section>
-    <!-- Modal -->
+
     <div
       class="modal fade"
       id="exampleModal"
@@ -176,24 +162,15 @@
       </div>
     </div>
 
-    <div class="container pt-5">
-        
-        <div class="row">
-            <% notes.forEach(function(note){ %>
-              <% note.notes.forEach((n => { %>
-                <div class="col-md-3">
-                  <div class="card mb-2 d-block mx-auto" style="width: 15rem;">
-                    <div class="card-body">
-                      <h5 class="card-title"><%= n.noteTitle.substring(0, 36) + "..." %></h5>
-                      <p class="card-text"><%= n.mainNote.substring(0, 30) + "..." %>
-                          <a href="/pNotes/<%= note._id %>/<%=n._id%>/<%= Uname %>">Read more</a>
-                      </p>
-                    </div>
-                  </div>
+    <section id="text_note">
+        <div class="container">
+            <div class="bg-white note_jb_tron mx-auto">
+                <h2><%=note.noteTitle%></h2>
+                <p><%=note.mainNote%></p>
+                <div class="float-right">
+                    <a href="/pDelete/note/<%= uId %>/<%= nId %>" style="color: red;"><i class="fas fa-trash-alt"></i></a> 
                 </div>
-              <%}))%>
-            <% }); %>
+            </div>
+            
         </div>
-        
-    </div>
-</html>
+      </section>
